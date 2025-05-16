@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Notess</title>
+  </head>
+  <body>
+    <h1>Welcome {{user.username}}</h1>
+      {% if notes %}
+      {% for item in notes %}
+      <ol>
+      <li>
+        <a href="/notes/{{item.pk}}">{{item.title}}</a>
+        <a href="/edit/{{item.pk}}"><button style="margin: 0px 10px">✏️</button></a>
+        <a href="/delete/{{item.pk}}"><button style="margin: 0px -9px">🗑️</button></a>
+        </li>
+      </ol>
+      {% endfor %}
+      {% else %}
+      <p>You have no notes</p>
+      {% endif %}
+    <a href="/create">Create a note</a><br>
+    <a href="/logout">Logout</a>
+  </body>
+</html>
