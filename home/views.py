@@ -58,6 +58,20 @@ def edit(request,noteid):
         form = NoteForm(instance=Note.objects.get(pk=noteid))
     return render(request,'edit.html',{'form':form})
 
+@login_required
+def share(request,noteid):
+    if request.user != Note.objects.get(pk=noteid).user:
+        return HttpResponse("This note doesn't exist")
+    if request.method=='POST':
+        user_id = int(request.POST['dropdown'])
+        user = User.objects.all().get(pk=user_id)
+        note = Note.objects.get(pk=noteid)
+        newnote = Note(title=f'{note.title} - Shared by {note.user}',description=note.description,user=user)
+        newnote.save()
+        return HttpResponse(f'Successfully shared note "{Note.objects.get(pk=noteid)}" with {user.username}')
+    else:
+        return render(request,'share.html',{'users':User.objects.all()})
+
 def loginUser(request):
     if request.user.is_authenticated:
         return render(request,'already.html',{'title':'Log in to another account','action':'log in to another account'})
@@ -97,3 +111,4 @@ def register(request):
     else:
         form = RegisterForm()
     return render(request,'register.html',{'form':form})
+
