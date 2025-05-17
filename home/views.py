@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponseRedirect, HttpResponse
-from .models import Note
-from .forms import NoteForm, RegisterForm
+from .models import Note,Notebook
+from .forms import NoteForm, RegisterForm,NotebookForm
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
@@ -11,9 +11,9 @@ from django.contrib.auth.models import User
 def index(request):
     context={
         'user' : request.user,
-        'notes': Note.objects.filter(user=request.user),
+        'notebooks': Notebook.objects.filter(user=request.user),
     }
-    return render(request,'index.html',context=context)
+    return render(request,'viewnotebooks.html',context=context)
 
 @login_required(login_url="/login")
 def viewnote(request,noteid):
@@ -25,17 +25,42 @@ def viewnote(request,noteid):
     return render(request,'viewnote.html',context=context)
 
 @login_required(login_url="/login")
+def viewnotebook(request,notebookid):
+    if request.user != Notebook.objects.get(pk=notebookid).user:
+        return HttpResponse("This note doesn't exist")
+    notebook = Notebook.objects.get(pk=notebookid)
+    context={
+        'notes' : Note.objects.filter(notebook=notebook),
+        'user' : request.user
+    }
+    return render(request,'index.html',context=context)
+
+
+@login_required(login_url="/login")
 def create(request):
     if request.method == 'POST':
-        form = NoteForm(request.POST)
+        form = NoteForm(request.POST,user=request.user)
         if form.is_valid():
             note = form.save(commit=False)
             note.user = request.user
             note.save()
             return HttpResponseRedirect("/")  
     else:
-        form = NoteForm()
+        form = NoteForm(user=request.user)
     return render(request,'create.html',{'form':form})
+
+@login_required(login_url="/login")
+def createnotebook(request):
+    if request.method == 'POST':
+        form = NotebookForm(request.POST)
+        if form.is_valid():
+            notebook = form.save(commit=False)
+            notebook.user = request.user
+            notebook.save()
+            return HttpResponseRedirect("/")
+    else:
+        form = NotebookForm()
+    return render(request,'createnotebook.html',{'form':form})
 
 @login_required(login_url="/login")
 def delete(request,noteid):
@@ -46,17 +71,36 @@ def delete(request,noteid):
     return HttpResponseRedirect('/')
 
 @login_required(login_url="/login")
+def deletenotebook(request,notebookid):
+    if request.user != Notebook.objects.get(pk=notebookid).user:
+        return HttpResponse("This note doesn't exist")
+    else:
+        Notebook.objects.get(pk=notebookid).delete()
+    return HttpResponseRedirect('/')
+
+@login_required(login_url="/login")
 def edit(request,noteid):
     if request.user != Note.objects.get(pk=noteid).user:
         return HttpResponse("This note doesn't exist")
     if request.method == 'POST':
-        form = NoteForm(request.POST,instance=Note.objects.get(pk=noteid))
+        form = NoteForm(request.POST,instance=Note.objects.get(pk=noteid),user=request.user)
         if form.is_valid():
             form.save()
             return HttpResponseRedirect('/')
     else:
-        form = NoteForm(instance=Note.objects.get(pk=noteid))
+        form = NoteForm(instance=Note.objects.get(pk=noteid),user=request.user)
     return render(request,'edit.html',{'form':form})
+
+@login_required(login_url="/login")
+def editnotebook(request,notebookid):
+    if request.method == 'POST':
+        form = NotebookForm(request.POST,instance=Notebook.objects.get(pk=notebookid))
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect('/')
+    else:
+        form = NotebookForm(instance=Notebook.objects.get(pk=notebookid))
+    return render(request,'editnotebook.html',{'form':form})
 
 @login_required
 def share(request,noteid):
@@ -66,7 +110,11 @@ def share(request,noteid):
         user_id = int(request.POST['dropdown'])
         user = User.objects.all().get(pk=user_id)
         note = Note.objects.get(pk=noteid)
-        newnote = Note(title=f'{note.title} - Shared by {note.user}',description=note.description,user=user)
+        notebook,created = Notebook.objects.get_or_create(
+            name=f"Shared by {note.user}",
+            user=user
+        )
+        newnote = Note(title=f'{note.title} - Shared by {note.user}',description=note.description,user=user,notebook=notebook)
         newnote.save()
         return HttpResponse(f'Successfully shared note "{Note.objects.get(pk=noteid)}" with {user.username}')
     else:

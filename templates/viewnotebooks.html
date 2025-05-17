@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Notebooks</title>
+  </head>
+  <body>
+    <ol>
+      {% for notebook in notebooks %}
+      <li>
+        <a href="/notebooks/{{notebook.pk}}">{{notebook.name}}</a>
+        <a href="/edit-notebook/{{notebook.pk}}"><button style="margin: 0px 10px">✏️</button></a>
+        <a href="/delete-notebook/{{notebook.pk}}"><button style="margin: 0px -9px">🗑️</button></a>
+      </li>
+
+      {% endfor %}
+    </ol>
+
+    {% if not notebooks %}
+    <p>You have no notebooks</p>
+    {% endif %}
+        <a href="/logout">Logout</a><br>
+    <a href="/create-notebook">Create a new notebook</a>
+  </body>
+</html>
