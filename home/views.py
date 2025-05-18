@@ -33,6 +33,7 @@ def viewnotebook(request,notebookid):
         return HttpResponse("This note doesn't exist")
     notebook = Notebook.objects.get(pk=notebookid)
     context={
+        'notebook' : notebook,
         'notes' : Note.objects.filter(notebook=notebook),
         'user' : request.user,
         'activities': Activity.objects.all().order_by('-time')
@@ -160,7 +161,7 @@ def loginUser(request):
         else:
             login(request,user)
             return HttpResponseRedirect('/')
-    context = {'activities': Activity.objects.all().order_by('-time')}
+    context = {'activities': Activity.objects.all().order_by('-time'), 'show_logout': False}
     return render(request,'login.html', context)
 
 @login_required(login_url="/login")
@@ -184,7 +185,7 @@ def register(request):
             return HttpResponseRedirect('/')
     else:
         form = RegisterForm()
-    context = {'form':form, 'activities': Activity.objects.all().order_by('-time')}
+    context = {'form':form, 'activities': Activity.objects.all().order_by('-time'), 'show_logout': False}
     return render(request,'register.html',context)
 
 def users(request):

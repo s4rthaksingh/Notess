@@ -1,24 +1,24 @@
-{% extends 'base.html' %}
-
-{% block title %}Notess{% endblock %}
-
-{% block content %}
-    <h1>Welcome {{user.username}}</h1>
-      {% if notes %}
-      {% for item in notes %}
-      <ol>
-      <li>
-        <a href="/notes/{{item.pk}}">{{item.title}}</a>
-        <a href="/edit/{{item.pk}}"><button style="margin: 0px 10px">✏️</button></a>
-        <a href="/delete/{{item.pk}}"><button style="margin: 0px -9px">🗑️</button></a>
-        <a href="/share/{{item.pk}}"><button style="margin: 0px 11px">Share</button></a>
-        </li>
-      </ol>
-      {% endfor %}
-      {% else %}
-      <p>You have no notes</p>
-      {% endif %}
-    <a href="/create">Create a note</a><br>
-    <a href="/logout">Logout</a><br>
-    <a href="/">Go back to notebooks</a>
+{% extends 'base.html' %} {% block title %}Notess{% endblock %} 
+{% block content%}
+<h1>Here are the notes for '{{notebook}}'</h1>
+<br />
+{% if notes %} {% for item in notes %}
+<ol>
+  <li>
+    <a href="/notes/{{item.pk}}">{{item.title}}</a>
+    <a href="/edit/{{item.pk}}"><button style="margin: 0px 10px">✏️</button></a>
+    <a href="/delete/{{item.pk}}"
+      ><button style="margin: 0px -9px">🗑️</button></a
+    >
+    <a href="/share/{{item.pk}}"
+      ><button style="margin: 0px 11px">Share</button></a
+    >
+  </li>
+</ol>
+{% endfor %} {% else %}
+<p>You have no notes</p>
+{% endif %}
+<a href="/create">Create a note</a><br />
+<a href="/logout">Logout</a><br />
+<a href="/">Go back to notebooks</a>
 {% endblock %}

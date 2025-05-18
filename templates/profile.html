@@ -4,6 +4,7 @@
 
 {% block content %}
     <h1>Welcome to {{user.username}}'s profile</h1>
+    <br>
       {% if notebook %}
       <h2>Notebook : {{notebook}}</h2>
       {% if notes %}
@@ -15,7 +16,7 @@
         </ol>
         {% endfor %}
       {% else %}
-          <p>{{user.username}} has no public notes</p>
+          <p>This notebook has no notes</p>
       {% endif %}
       {% else %}
       <p>{{user.username}} has no public notebook</p>

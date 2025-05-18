@@ -3,6 +3,7 @@
 {% block title %}Notebooks{% endblock %}
 
 {% block content %}
+<h1>Welcome {{user.username}}, here are your notebooks</h1><br>
     <ol>
       {% for notebook in notebooks %}
       <li>

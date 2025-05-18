@@ -6,12 +6,13 @@ from django.contrib.auth.forms import UserCreationForm
 class NoteForm(forms.ModelForm):
     class Meta:
         model = Note
-        fields = ['title','description','notebook']
-    
-    def __init__(self,*args, **kwargs):
-        user = kwargs.pop('user')
+        fields = ['title', 'description', 'notebook']
+
+    def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop('user')  # Store user for later use in clean
         super().__init__(*args, **kwargs)
-        self.fields['notebook'].queryset = Notebook.objects.filter(user=user)
+        self.fields['notebook'].queryset = Notebook.objects.filter(user=self.user)
+
 
 class RegisterForm(UserCreationForm):
     class Meta:
