@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{% block title %}My Notes{% endblock %}</title>
+</head>
+<body>
+    <div style="display: flex;">
+        <!-- Main Content -->
+        <div style="flex: 3;">
+            {% block content %}{% endblock %}
+        </div>
+
+        <!-- Sidebar -->
+        <div style="flex: 1; padding-left: 20px; border-left: 1px solid #ccc;">
+            <h3>Recent Activity</h3>
+            <ul>
+                {% for activity in activities %}
+                    <li>{{activity}}</li>
+                {% empty %}
+                    <li>No activity yet</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</body>
+</html>

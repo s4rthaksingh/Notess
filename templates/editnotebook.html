@@ -1,16 +1,12 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Edit a notebook</title>
-</head>
-<body>
+{% extends 'base.html' %}
+
+{% block title %}Edit a notebook{% endblock %}
+
+{% block content %}
     <h1>Edit a notebook</h1>
     <form method="post">
         {% csrf_token %}
         {{form}}
         <input type="submit" value="Submit">
     </form>
-</body>
-</html>
+{% endblock %}

@@ -1,11 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Notess</title>
-  </head>
-  <body>
+{% extends 'base.html' %}
+
+{% block title %}Notess{% endblock %}
+
+{% block content %}
     <h1>Welcome {{user.username}}</h1>
       {% if notes %}
       {% for item in notes %}
@@ -24,5 +21,4 @@
     <a href="/create">Create a note</a><br>
     <a href="/logout">Logout</a><br>
     <a href="/">Go back to notebooks</a>
-  </body>
-</html>
+{% endblock %}
