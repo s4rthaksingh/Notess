@@ -15,5 +15,7 @@ urlpatterns = [
     path('share/<int:noteid>',views.share),
     path('login/',views.loginUser),
     path('logout/',views.logoutUser),
-    path('register/',views.register)
+    path('register/',views.register),
+    path('users/',views.users),
+    path('users/<username>',views.viewuser),
 ]

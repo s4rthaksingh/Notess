@@ -17,10 +17,11 @@ def index(request):
 
 @login_required(login_url="/login")
 def viewnote(request,noteid):
-    if request.user != Note.objects.get(pk=noteid).user:
+    note = Note.objects.get(pk=noteid)
+    if request.user != note.user and not note.notebook.is_public:
         return HttpResponse("This note doesn't exist")
     context={
-        'note' : Note.objects.get(pk=noteid)
+        'note' : note
     }
     return render(request,'viewnote.html',context=context)
 
@@ -52,14 +53,14 @@ def create(request):
 @login_required(login_url="/login")
 def createnotebook(request):
     if request.method == 'POST':
-        form = NotebookForm(request.POST)
+        form = NotebookForm(request.POST,user=request.user)
         if form.is_valid():
             notebook = form.save(commit=False)
             notebook.user = request.user
             notebook.save()
             return HttpResponseRedirect("/")
     else:
-        form = NotebookForm()
+        form = NotebookForm(user=request.user)
     return render(request,'createnotebook.html',{'form':form})
 
 @login_required(login_url="/login")
@@ -94,12 +95,12 @@ def edit(request,noteid):
 @login_required(login_url="/login")
 def editnotebook(request,notebookid):
     if request.method == 'POST':
-        form = NotebookForm(request.POST,instance=Notebook.objects.get(pk=notebookid))
+        form = NotebookForm(request.POST,instance=Notebook.objects.get(pk=notebookid),user=request.user)
         if form.is_valid():
             form.save()
             return HttpResponseRedirect('/')
     else:
-        form = NotebookForm(instance=Notebook.objects.get(pk=notebookid))
+        form = NotebookForm(instance=Notebook.objects.get(pk=notebookid),user=request.user)
     return render(request,'editnotebook.html',{'form':form})
 
 @login_required
@@ -160,3 +161,15 @@ def register(request):
         form = RegisterForm()
     return render(request,'register.html',{'form':form})
 
+def users(request):
+    users = User.objects.all()
+    return render(request,'users.html',{'users':users})
+
+def viewuser(request,username):
+    print(username)
+    user = User.objects.get(username=username)
+    print(user)
+    public_notebook = Notebook.objects.filter(user=user,is_public=True).first()
+    print(public_notebook)
+    notes = Note.objects.filter(user=user,notebook=public_notebook)
+    return render(request,'profile.html',{'notebook':public_notebook,'notes':notes,'user':user})

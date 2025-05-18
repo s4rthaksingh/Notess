@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Notess</title>
+  </head>
+  <body>
+    <h1>Welcome to {{user.username}}'s profile</h1>
+      {% if notebook %}
+      <h2>Notebook : {{notebook}}</h2>
+      {% if notes %}
+        {% for item in notes %}
+        <ol>
+        <li>
+            <a href="/notes/{{item.pk}}">{{item.title}}</a>
+            </li>
+        </ol>
+        {% endfor %}
+      {% else %}
+          <p>{{user.username}} has no public notes</p>
+      {% endif %}
+      {% else %}
+      <p>{{user.username}} has no public notebook</p>
+      {% endif %}
+    <a href="/">Go back to home</a>
+  </body>
+</html>
