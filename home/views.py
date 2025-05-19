@@ -181,7 +181,7 @@ def register(request):
             user.username = user.username.lower()
             user.save()
             login(request,user)
-            Activity.objects.create(user=user, message="just signed up!")
+            Activity.objects.create(user=user, message="just signed up")
             return HttpResponseRedirect('/')
     else:
         form = RegisterForm()
