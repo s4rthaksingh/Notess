@@ -1,6 +1,9 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.utils.timezone import localtime
+import pytz
 
+IST = pytz.timezone('Asia/Kolkata')
 # Create your models here.
 
 class Notebook(models.Model):
@@ -21,7 +24,8 @@ class Note(models.Model):
 class Activity(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     message = models.CharField(max_length=200)
-    time = models.TimeField(auto_now_add=True)
+    time = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"{self.user} {self.message} at {self.time.strftime('%I:%M %p')}"
+        ist_time = localtime(self.time,timezone=IST)
+        return f"{self.user} {self.message} on {ist_time.strftime("%B %d, %Y")}\n at {ist_time.strftime("%I:%M:%S %p")}"
