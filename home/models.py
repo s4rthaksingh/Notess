@@ -28,4 +28,4 @@ class Activity(models.Model):
 
     def __str__(self):
         ist_time = localtime(self.time,timezone=IST)
-        return f"{self.user} {self.message} on {ist_time.strftime("%B %d, %Y")}\n at {ist_time.strftime("%I:%M:%S %p")}"
+        return f"{self.user} {self.message} on {ist_time.strftime('%B %d, %Y')}\n at {ist_time.strftime('%I:%M:%S %p')}"
